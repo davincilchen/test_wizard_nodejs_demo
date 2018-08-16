@@ -13,7 +13,10 @@ let infinitechain = new InfinitechainBuilder()
   .setStorage('memory')
   .build();
 
-let txNumber = 100;
+
+//let txNumber = 100; 
+let txNumber = 1;
+let acNumber = 1; //5
 let keys = ['41b1a0649752af1b28b3dc29a1556eee781e4a4c3a1f7f53f90fa834de098c41', '41b1a0649752af1b28b3dc29a1556eee781e4a4c3a1f7f53f90fa834de098c42', '41b1a0649752af1b28b3dc29a1556eee781e4a4c3a1f7f53f90fa834de098c43', '41b1a0649752af1b28b3dc29a1556eee781e4a4c3a1f7f53f90fa834de098c44', '41b1a0649752af1b28b3dc29a1556eee781e4a4c3a1f7f53f90fa834de098c45'];
 let chains = keys.map(key => {
   return new InfinitechainBuilder()
@@ -44,7 +47,8 @@ let getRandomPair = async (chains, addressPool) => {
 
 infinitechain.initialize().then(async () => {
   // Remittance
-  for (let i = 0; i < 5; i++) {
+  //for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < acNumber; i++) {
     try{
       await remittance(infinitechain, addressPool[i], 1000);
     } catch (e) {
@@ -64,17 +68,19 @@ infinitechain.initialize().then(async () => {
 });
 
 let remittance = async (chain, to, value) => {
-  // let asset = env.assetAddress.padStart(64, '0');
+  let asset = env.assetAddress.padStart(64, '0');
   let remittanceData = {
     from: chain.signer.getAddress(),
     to: to,
-    assetID: '0'.padStart(64, '0'),
-    // assetID: asset,
+    //assetID: '0'.padStart(64, '0'),
+    assetID: asset,
     value: value,
     fee: 0.002
   };
   try {
     let lightTx = await chain.client.makeLightTx(Types.remittance, remittanceData);
+
+    //console.log(lightTx);
     await axios.post(url, lightTx.toJson());
     return lightTx.lightTxHash;
   } catch(e) {

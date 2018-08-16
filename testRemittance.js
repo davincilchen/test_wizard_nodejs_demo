@@ -13,7 +13,7 @@ let infinitechain = new InfinitechainBuilder()
   .setStorage('memory')
   .build();
 
-let txNumber = 100;
+let txNumber = 1; //100->1
 let keys = ['41b1a0649752af1b28b3dc29a1556eee781e4a4c3a1f7f53f90fa834de098c41', '41b1a0649752af1b28b3dc29a1556eee781e4a4c3a1f7f53f90fa834de098c42', '41b1a0649752af1b28b3dc29a1556eee781e4a4c3a1f7f53f90fa834de098c43', '41b1a0649752af1b28b3dc29a1556eee781e4a4c3a1f7f53f90fa834de098c44', '41b1a0649752af1b28b3dc29a1556eee781e4a4c3a1f7f53f90fa834de098c45'];
 let chains = keys.map(key => {
   return new InfinitechainBuilder()
