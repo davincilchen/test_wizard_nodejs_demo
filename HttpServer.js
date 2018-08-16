@@ -41,11 +41,24 @@ app.post('/tokenDeposit/:address/:value', async function (req, res) {
   console.log("Token Deposit");
   let address = req.params.address.toLowerCase();
   let value = req.params.value;
-  console.log("address = ", address, ", value = ", value);
-  console.log(address);
-  console.log(value);
-
+  let message = '';
   let asset = env.assetAddress.padStart(64, '0');
+  console.log("address = ", address, ", value = ", value);
+  
+
+  if (isNaN(value)){
+    message = 'value ' + value + ' is not a number';
+    res.send({ ok: false, message:  message});
+    console.log(message);
+    return;
+  }
+
+  let data = await getBalance(makeupAddress(address),asset);
+  let balance = data.balance;
+  console.log('balance:');
+  console.log(balance);
+
+  
   await remittance(infinitechain,address,value,asset);
   res.send({ ok: true });
 
@@ -73,6 +86,12 @@ let remittance = async (chain, to, value, asset) => {
   }
 };
 
+function makeupAddress(address){
+  console.log(address);
+  address = address.toString().replace("0x","").padStart(64, '0');
+  console.log(address);
+  return address;
+}
 let getBalance = async  (address, assetID) => {
   if (!assetID) {
     assetID = '0'.padStart(64, '0');
