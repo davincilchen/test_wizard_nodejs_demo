@@ -1,4 +1,5 @@
 let env = require('./env');
+let BigNumber = require('bignumber.js');
 let express = require('express');
 let bodyParser = require('body-parser');
 let cors = require('cors');
@@ -53,11 +54,18 @@ app.post('/tokenDeposit/:address/:value', async function (req, res) {
     return;
   }
 
-  let data = await getBalance(makeupAddress(address),asset);
+  let data = await getBalance(makeupAddress(infinitechain.signer.getAddress()),asset);
   let balance = data.balance;
-  console.log('balance:');
-  console.log(balance);
-
+  
+  check =  (value * 1e18)
+  //check =  (546 * 1e18)
+  console.log('value:' + check);
+  console.log('balance:' + balance);
+  if (check>balance){
+    message = 'balance is not enough';
+    res.send({ ok: false, message:  message});
+    return;
+  }
   
   await remittance(infinitechain,address,value,asset);
   res.send({ ok: true });
