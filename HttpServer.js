@@ -1,5 +1,4 @@
 let env = require('./env');
-let BigNumber = require('bignumber.js');
 let express = require('express');
 let bodyParser = require('body-parser');
 let cors = require('cors');
@@ -58,7 +57,6 @@ app.post('/tokenDeposit/:address/:value', async function (req, res) {
   let balance = data.balance;
   
   check =  (value * 1e18)
-  //check =  (546 * 1e18)
   console.log('value:' + check);
   console.log('balance:' + balance);
   if (check>balance){
