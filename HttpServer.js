@@ -49,56 +49,6 @@ app.post('/tokenDeposit/:address/:value', async function (req, res) {
   await remittance(infinitechain,address,value,asset);
   res.send({ ok: true });
 
-  /*
-  let asset = env.assetAddress.padStart(64, '0');
-  let remittanceData = {
-    from: infinitechain.signer.getAddress(),
-    to: address,
-    //assetID: '0'.padStart(64, '0'),
-    assetID: asset,
-    value: value,
-    //value: 10.2,
-    //fee: 0.002
-    fee: 0
-  };
-
-  console.log(remittanceData);
-
-  try {
-    console.log('--------------------------------');
-    let lightTx = await infinitechain.client.makeLightTx(Types.remittance, remittanceData);
-    
-    //console.log(lightTx);
-
-    let resLocal = await axios.post(urlWizardNodeSvr, lightTx.toJson());
-    console.log(resLocal.data);
-    
-
-    console.log('-------------------------------');
-    res.send({ ok: true, lightTx: lightTx, receipt: resLocal.data});
-    //res.send({ ok: true });
-    //res.send(lightTx.lightTxHash);
-    //return lightTx.lightTxHash;
-  } catch(e) {
-    console.log('-------------2---');
-    console.log(e);
-  }
-  */
-
-  /*
-  try {
-    let lightTxJson = req.body;
-    let lightTx = new LightTransaction(lightTxJson);
-    let signedLightTx = infinitechain.signer.signWithServerKey(lightTx);
-    let receipt = await infinitechain.server.sendLightTx(signedLightTx);
-
-    let signedReceipt = infinitechain.signer.signWithServerKey(receipt);
-    res.send(signedReceipt);
-  } catch (e) {
-    console.error(e);
-    res.status(500).send({ errors: e.message });
-  }
-  */
 });
 
   
