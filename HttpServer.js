@@ -8,6 +8,10 @@ let axios = require('axios');
 let InfinitechainBuilder = wizard.InfinitechainBuilder;
 let Types = wizard.Types;
 
+let myPort = parseInt(env.howAPIPort);
+if (isNaN(myPort) || myPort <= 0) {
+  myPort = 3002;
+}
 
 let infinitechain = new InfinitechainBuilder()
   .setNodeUrl(env.nodeUrl)
@@ -27,9 +31,8 @@ let server = require('http').createServer(app);
 let couldGracefulShotdown = true;
 
 app.get('/balance/:address', async function (req, res) {
-  let asset = env.assetAddress.padStart(64, '0');
   let address = req.params.address.toLowerCase();
-  let data = await getBalance(address,asset);
+  let data = await getBalance(address,getValidAssetID());
   res.send(data);
 });
 
@@ -39,8 +42,8 @@ app.post('/tokenDeposit/:address/:value', async function (req, res) {
   console.log("Token Deposit");
   let address = req.params.address.toLowerCase();
   let value = req.params.value;
+  let asset = getValidAssetID();
   let message = '';
-  let asset = env.assetAddress.padStart(64, '0');
   console.log("address = ", address, ", value = ", value);
   
 
@@ -63,8 +66,8 @@ app.post('/tokenDeposit/:address/:value', async function (req, res) {
   let balance = data.balance;
   
   check =  (value * 1e18)
-  console.log('value:' + check);
-  console.log('balance:' + balance);
+  console.log('deposit value:' + check);
+  console.log('owner balance:' + balance);
   if (check>balance){
     message = 'balance is not enough';
     res.status(400).send({ ok: false, message:  message});
@@ -100,28 +103,26 @@ let remittance = async (chain, to, value, asset) => {
 };
 
 function makeupAddress(address){
-  console.log(address);
   address = address.toString().replace("0x","").padStart(64, '0');
-  console.log(address);
   return address;
 }
-let getBalance = async  (address, assetID) => {
-  if (!assetID) {
-    assetID = '0'.padStart(64, '0');
-  } else {
-    assetID = assetID.toString().padStart(64, '0');
-  }
 
+function getValidAssetID(){
+  let assetID = env.assetAddress.toString().replace("0x","").padStart(64, '0');
+  return assetID;
+}
+
+
+let getBalance = async  (address, assetID) => {
   let url = env.nodeUrl + '/balance/' + address + '?assetID=' + assetID;
   console.log(url);
   let res = await axios.get(url);
-  console.log(res.data);
   return res.data
 };
 
-server.listen(3002, async function () {
+server.listen(myPort, async function () {
   try {
-    console.log('App listening on port 3002!');
+    console.log('App listening on port ' + myPort + ' !');
   } catch (e) {
     console.error(e.message);
   }
