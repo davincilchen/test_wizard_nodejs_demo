@@ -46,14 +46,14 @@ app.post('/tokenDeposit/:address/:value', async function (req, res) {
 
   if (isNaN(value)){
     message = 'value \'' + value + '\' is not a number';
-    res.send({ ok: false, message:  message});
+    res.status(400).send({ ok: false, message:  message});
     console.log(message);
     return;
   }
 
   if (value <= 0){
     message = 'value must bigger then zero ';
-    res.send({ ok: false, message:  message});
+    res.status(400).send({ ok: false, message:  message});
     console.log(message);
     return;
   }
@@ -67,7 +67,7 @@ app.post('/tokenDeposit/:address/:value', async function (req, res) {
   console.log('balance:' + balance);
   if (check>balance){
     message = 'balance is not enough';
-    res.send({ ok: false, message:  message});
+    res.status(400).send({ ok: false, message:  message});
     return;
   }
   
