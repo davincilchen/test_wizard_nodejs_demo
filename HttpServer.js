@@ -4,12 +4,11 @@ let bodyParser = require('body-parser');
 let cors = require('cors');
 let wizard = require('wizard_nodejs');
 let axios = require('axios');
-let Web3 = require('web3');
-let web3 = new Web3(new Web3.providers.HttpProvider(env.web3Url));
+
 let InfinitechainBuilder = wizard.InfinitechainBuilder;
 let Types = wizard.Types;
-let urlWizardNodeSvr = 'http://127.0.0.1:3001/pay';
-let urlGrigotts = 'http://127.0.0.1:3000';
+
+
 let infinitechain = new InfinitechainBuilder()
   .setNodeUrl(env.nodeUrl)
   .setWeb3Url(env.web3Url)
@@ -91,7 +90,8 @@ let remittance = async (chain, to, value, asset) => {
   };
   try {
     let lightTx = await chain.client.makeLightTx(Types.remittance, remittanceData);
-    let resLocal = await axios.post(urlWizardNodeSvr, lightTx.toJson());
+    let wizardNodeServerUrl = env.wizardNodeServerUrl + "/pay";
+    let resLocal = await axios.post(wizardNodeServerUrl, lightTx.toJson());
     console.log(resLocal.data);
     return lightTx.lightTxHash;
   } catch(e) {
@@ -112,7 +112,7 @@ let getBalance = async  (address, assetID) => {
     assetID = assetID.toString().padStart(64, '0');
   }
 
-  let url = urlGrigotts + '/balance/' + address + '?assetID=' + assetID;
+  let url = env.nodeUrl + '/balance/' + address + '?assetID=' + assetID;
   console.log(url);
   let res = await axios.get(url);
   console.log(res.data);
