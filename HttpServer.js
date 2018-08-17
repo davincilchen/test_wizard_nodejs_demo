@@ -3,7 +3,6 @@ let express = require('express');
 let bodyParser = require('body-parser');
 let cors = require('cors');
 let wizard = require('wizard_nodejs');
-//let Util = require('ethereumjs-util');
 let axios = require('axios');
 let Web3 = require('web3');
 let web3 = new Web3(new Web3.providers.HttpProvider(env.web3Url));
@@ -47,11 +46,19 @@ app.post('/tokenDeposit/:address/:value', async function (req, res) {
   
 
   if (isNaN(value)){
-    message = 'value ' + value + ' is not a number';
+    message = 'value \'' + value + '\' is not a number';
     res.send({ ok: false, message:  message});
     console.log(message);
     return;
   }
+
+  if (value <= 0){
+    message = 'value must bigger then zero ';
+    res.send({ ok: false, message:  message});
+    console.log(message);
+    return;
+  }
+
 
   let data = await getBalance(makeupAddress(infinitechain.signer.getAddress()),asset);
   let balance = data.balance;
